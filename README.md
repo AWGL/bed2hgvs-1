@@ -1,7 +1,6 @@
 # bed2hgvs
 Annotates a BED file with HGVS-like coordinates
 
-# run-Rbed2hgvs
 
 ```
 usage: bed2hgvs.R [-h] -b BEDFILE [-o OUTNAME] [-O OUTDIR]
