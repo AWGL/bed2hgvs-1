@@ -1,4 +1,17 @@
-library(magrittr, quietly = T)
+if(!require(magrittr)){
+  install.packages("magrittr")
+  library(magrittr)
+}
+
+if(!require(devtools)){
+  install.packages("devtools")
+  library(Rbed2HGVS)
+}
+
+if(!require(Rbed2HGVS)){
+  devtools::install_github(repo = "cwmedway/Rbed2HGVS", dependencies = T)
+  library(Rbed2HGVS)
+}
 
 parseCmdArgs <- function() {
 
@@ -51,7 +64,7 @@ parseCmdArgs <- function() {
 args <- parseCmdArgs()
 
 # run main function
-results <- Rbed2HGVS::Rbed2HGVS(bedfile = args$bedfile, db = args$refseqdb, preferred_tx = args$preferred_tx)
+out <- Rbed2HGVS::Rbed2HGVS(bedfile = args$bedfile, db = args$refseqdb, preferred_tx = args$preferred_tx)
 
 # reformat HGVS column
 out$hgvs$tx <- paste0(out$hgvs$gene, "(", out$hgvs$tx,")",":c.", out$hgvs$hgvs_start,"_", out$hgvs$hgvs_end)
