@@ -36,6 +36,7 @@ parseCmdArgs <- function() {
   parser$add_argument(
     "-O",
     "--outdir",
+    default="./",
     help="output file directory",
     type="character"
     )
