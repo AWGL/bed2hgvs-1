@@ -37,7 +37,6 @@ parseCmdArgs <- function() {
     "-O",
     "--outdir",
     help="output file directory",
-    default="./",
     type="character"
     )
 
@@ -80,7 +79,7 @@ write.table(
   )
 
 # write out any missing or inconsistent preferred REFSEQ transcripts
-if (!is.na(args$preferred_tx)) {
+if (!is.null(args$preferred_tx)) {
 
   write.table(
     x = out[['missing']],
