@@ -66,37 +66,40 @@ args <- parseCmdArgs()
 # run main function
 out <- Rbed2HGVS::Rbed2HGVS(bedfile = args$bedfile, db = args$refseqdb, preferred_tx = args$preferred_tx)
 
-# reformat HGVS column
-out$hgvs$tx <- paste0(out$hgvs$gene, "(", out$hgvs$tx,")",":c.", out$hgvs$hgvs_start,"_", out$hgvs$hgvs_end)
+if (!is.na(out)) {
 
-# write out annotated BED
-write.table(
-  x = out$hgvs[,1:4],
-  sep = "\t" ,
-  file = paste0(args$outdir, "/", args$outname, ".gaps"),
-  quote = F,
-  row.names = F,
-  col.names = F
-  )
+  # reformat HGVS column
+  out$hgvs$tx <- paste0(out$hgvs$gene, "(", out$hgvs$tx,")",":c.", out$hgvs$hgvs_start,"_", out$hgvs$hgvs_end)
 
-# write out any missing or inconsistent preferred REFSEQ transcripts
-if (!is.null(args$preferred_tx)) {
-
+  # write out annotated BED
   write.table(
-    x = out[['missing']],
-    sep = "\t",
-    file = paste0(args$outdir, "/", args$outname, ".rbed2hgvs.missing"),
+    x = out$hgvs[,1:4],
+    sep = "\t" ,
+    file = paste0(args$outdir, "/", args$outname, ".gaps"),
     quote = F,
     row.names = F,
     col.names = F
     )
 
-  write.table(
-    x = out[['version']],
-    sep = "\t",
-    file = paste0(args$outdir, "/", args$outname, ".rbed2hgvs.version"),
-    quote = F,
-    row.names = F,
-    col.names = F
-  )
+  # write out any missing or inconsistent preferred REFSEQ transcripts
+  if (!is.null(args$preferred_tx)) {
+
+    write.table(
+      x = out[['missing']],
+      sep = "\t",
+      file = paste0(args$outdir, "/", args$outname, ".rbed2hgvs.missing"),
+      quote = F,
+      row.names = F,
+      col.names = F
+      )
+
+    write.table(
+      x = out[['version']],
+      sep = "\t",
+      file = paste0(args$outdir, "/", args$outname, ".rbed2hgvs.version"),
+      quote = F,
+      row.names = F,
+      col.names = F
+    )
+  }
 }
