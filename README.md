@@ -20,7 +20,18 @@ optional arguments:
                         <REFSEQID>. One REFSEQID per row
 
 ```
+The script will return a tsv file of bed intervals with HGVS annotations on the 4th column. If preferred_transcripts are given, any conflict between given transcripts and those stored in the data abse will be written to file:
 
-This script required R package Rbed2HGVS (https://github.com/cwmedway/Rbed2HGVS). This package uses an internal RefSeq database compiled from UCSC. 
+```
+.rbed2hgvs.missing
+Transcipts - irrespective of version - was not found in the DB
+
+.rbed2hgvs.version
+Transcripts were founds, but versions were conflicting
+```
 
 
+This script required R package Rbed2HGVS (https://github.com/cwmedway/Rbed2HGVS). Once the shared conda environment (/env/bed2hgvs.yml) is active, Rbed2HGVS can be installed:
+```
+devtools::install_github(repo = "cwmedway/Rbed2HGVS", dependencies = T)
+```
