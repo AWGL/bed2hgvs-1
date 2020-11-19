@@ -48,14 +48,6 @@ parseCmdArgs <- function() {
     type="character"
     )
 
-  parser$add_argument(
-    "-d",
-    "--refseqdb",
-    help="path to sqlite database of REFSEQ transcripts",
-    required=T,
-    type="character"
-    )
-
   parser$parse_args() %>%
     return()
 }
@@ -63,17 +55,24 @@ parseCmdArgs <- function() {
 # get command line arguments
 args <- parseCmdArgs()
 
-# run main function
-out <- Rbed2HGVS::Rbed2HGVS(bedfile = args$bedfile, db = args$refseqdb, preferred_tx = args$preferred_tx)
+# load bedfile
+bedfile <- rtracklayer::import(con = args$bedfile, format = 'bed')
 
-if (!is.na(out)) {
+# run main function
+output <- Rbed2HGVS::Rbed2HGVS(bedfile = bedfile, preferred_tx = args$preferred_tx)
+
+if (!is.null(output$hgvs)) {
 
   # reformat HGVS column
-  out$hgvs$tx <- paste0(out$hgvs$gene, "(", out$hgvs$tx,")",":c.", out$hgvs$hgvs_start,"_", out$hgvs$hgvs_end)
+  output$hgvs$tx <- paste0(
+    output$hgvs$gene,
+    "(", output$hgvs$tx,")",
+    ":c.", output$hgvs$hgvs_start,"_", output$hgvs$hgvs_end
+    )
 
   # write out annotated BED
   write.table(
-    x = out$hgvs[,1:4],
+    x = output$hgvs[,1:4],
     sep = "\t" ,
     file = paste0(args$outdir, "/", args$outname, ".gaps"),
     quote = F,
@@ -85,7 +84,7 @@ if (!is.na(out)) {
   if (!is.null(args$preferred_tx)) {
 
     write.table(
-      x = out[['missing']],
+      x = output[['missing']],
       sep = "\t",
       file = paste0(args$outdir, "/", args$outname, ".rbed2hgvs.missing"),
       quote = F,
@@ -94,7 +93,7 @@ if (!is.na(out)) {
       )
 
     write.table(
-      x = out[['version']],
+      x = output[['version']],
       sep = "\t",
       file = paste0(args$outdir, "/", args$outname, ".rbed2hgvs.version"),
       quote = F,
