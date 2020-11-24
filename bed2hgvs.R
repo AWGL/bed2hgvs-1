@@ -64,21 +64,28 @@ output <- Rbed2HGVS::Rbed2HGVS(bedfile = bedfile, preferred_tx = args$preferred_
 if (!is.null(output$hgvs)) {
 
   # reformat HGVS column
-  output$hgvs$tx <- paste0(
+  output$hgvs$hgvs <- paste0(
     output$hgvs$gene,
     "(", output$hgvs$tx,")",
     ":c.", output$hgvs$hgvs_start,"_", output$hgvs$hgvs_end
     )
 
   # write out annotated BED
-  write.table(
-    x = output$hgvs[,1:4],
-    sep = "\t" ,
-    file = paste0(args$outdir, "/", args$outname, ".gaps"),
-    quote = F,
-    row.names = F,
-    col.names = F
-    )
+  data.frame(
+    GenomicRanges::seqnames(output$hgvs) %>% as.character(),
+    GenomicRanges::start(output$hgvs) - 1,
+    GenomicRanges::end(output$hgvs),
+    output$hgvs$hgvs,
+    stringsAsFactors = F
+  ) %>%
+    write.table(
+      x = .,
+      sep = "\t" ,
+      file = paste0(args$outdir, "/", args$outname, ".gaps"),
+      quote = F,
+      row.names = F,
+      col.names = F
+      )
 
   # write out any missing or inconsistent preferred REFSEQ transcripts
   if (!is.null(args$preferred_tx)) {
