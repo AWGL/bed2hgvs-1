@@ -29,7 +29,7 @@ parseCmdArgs <- function() {
     "-o",
     "--outname",
     help="output file name",
-    default="hgvs",
+    default="hgvs.gaps",
     type="character"
     )
 
@@ -56,12 +56,13 @@ parseCmdArgs <- function() {
 args <- parseCmdArgs()
 
 # load bedfile
+
 bedfile <- rtracklayer::import(con = args$bedfile, format = 'bed')
 
 # run main function
 output <- Rbed2HGVS::Rbed2HGVS(bedfile = bedfile, preferred_tx = args$preferred_tx)
 
-if (!is.null(output$hgvs)) {
+if (length(output$hgvs) > 0) {
 
   # reformat HGVS column
   output$hgvs$hgvs <- paste0(
@@ -81,7 +82,7 @@ if (!is.null(output$hgvs)) {
     write.table(
       x = .,
       sep = "\t" ,
-      file = paste0(args$outdir, "/", args$outname, ".gaps"),
+      file = paste0(args$outdir, "/", args$outname),
       quote = F,
       row.names = F,
       col.names = F
@@ -108,4 +109,9 @@ if (!is.null(output$hgvs)) {
       col.names = F
     )
   }
+} else {
+  # write empty table
+  file.create( 
+    paste0(args$outdir, "/", args$outname)
+    )
 }
