@@ -20,7 +20,7 @@ arguments:
                         <REFSEQID>. One REFSEQID per row
 
 ```
-Rreturn a TSV file of bed intervals with HGVS-like annotations on the 4th column. If a file of preferred_transcripts (RefSeq) are given, any conflict between given transcripts and those stored in the internal RefSeq database will be written to file:
+Returns a TSV file of bed intervals with HGVS-like annotations on the 4th column. If a file of preferred transcripts (RefSeq) are given, any conflict between given transcripts and those stored in the internal RefSeq database will be written to file:
 
 ```
 .rbed2hgvs.missing
